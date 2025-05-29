@@ -8,7 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
-	"github.com/yourusername/api-gateway/internal/config"
+	"github.com/hsibAD/api-gateway/internal/config"
 )
 
 type RateLimiter struct {

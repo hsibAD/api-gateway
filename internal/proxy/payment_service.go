@@ -6,7 +6,7 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	pb "github.com/yourusername/payment-service/proto"
+	pb "github.com/hsibAD/payment-service/proto"
 )
 
 type PaymentServiceClient struct {

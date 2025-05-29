@@ -5,17 +5,17 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/yourusername/api-gateway/internal/proxy"
-	pb "github.com/yourusername/payment-service/proto"
+	"github.com/hsibAD/api-gateway/internal/proxy"
+	pb "github.com/hsibAD/payment-service/proto"
 )
 
 type PaymentHandler struct {
-	paymentService *proxy.PaymentServiceClient
+	paymentClient *proxy.PaymentServiceClient
 }
 
-func NewPaymentHandler(paymentService *proxy.PaymentServiceClient) *PaymentHandler {
+func NewPaymentHandler(paymentClient *proxy.PaymentServiceClient) *PaymentHandler {
 	return &PaymentHandler{
-		paymentService: paymentService,
+		paymentClient: paymentClient,
 	}
 }
 
@@ -42,7 +42,7 @@ func (h *PaymentHandler) InitiatePayment(c *gin.Context) {
 		PaymentMethod: pb.PaymentMethod(pb.PaymentMethod_value[request.PaymentMethod]),
 	}
 
-	payment, err := h.paymentService.InitiatePayment(c.Request.Context(), req)
+	payment, err := h.paymentClient.InitiatePayment(c.Request.Context(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -77,7 +77,7 @@ func (h *PaymentHandler) ProcessCreditCardPayment(c *gin.Context) {
 		},
 	}
 
-	payment, err := h.paymentService.ProcessCreditCardPayment(c.Request.Context(), req)
+	payment, err := h.paymentClient.ProcessCreditCardPayment(c.Request.Context(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -102,7 +102,7 @@ func (h *PaymentHandler) InitiateMetaMaskPayment(c *gin.Context) {
 		WalletAddress: request.WalletAddress,
 	}
 
-	response, err := h.paymentService.InitiateMetaMaskPayment(c.Request.Context(), req)
+	response, err := h.paymentClient.InitiateMetaMaskPayment(c.Request.Context(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -127,7 +127,7 @@ func (h *PaymentHandler) ConfirmMetaMaskPayment(c *gin.Context) {
 		TransactionHash: request.TransactionHash,
 	}
 
-	payment, err := h.paymentService.ConfirmMetaMaskPayment(c.Request.Context(), req)
+	payment, err := h.paymentClient.ConfirmMetaMaskPayment(c.Request.Context(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -142,7 +142,7 @@ func (h *PaymentHandler) GetPayment(c *gin.Context) {
 		PaymentId: paymentID,
 	}
 
-	payment, err := h.paymentService.GetPayment(c.Request.Context(), req)
+	payment, err := h.paymentClient.GetPayment(c.Request.Context(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -157,7 +157,7 @@ func (h *PaymentHandler) GetPaymentsByOrder(c *gin.Context) {
 		OrderId: orderID,
 	}
 
-	payments, err := h.paymentService.GetPaymentsByOrder(c.Request.Context(), req)
+	payments, err := h.paymentClient.GetPaymentsByOrder(c.Request.Context(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -177,7 +177,7 @@ func (h *PaymentHandler) GetPendingPayments(c *gin.Context) {
 		Limit:  int32(limit),
 	}
 
-	payments, err := h.paymentService.GetPendingPayments(c.Request.Context(), req)
+	payments, err := h.paymentClient.GetPendingPayments(c.Request.Context(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

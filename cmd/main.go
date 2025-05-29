@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"github.com/yourusername/api-gateway/internal/config"
-	"github.com/yourusername/api-gateway/internal/server"
+	"github.com/hsibAD/api-gateway/internal/config"
+	"github.com/hsibAD/api-gateway/internal/server"
 )
 
 func main() {

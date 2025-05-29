@@ -5,18 +5,18 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/yourusername/api-gateway/internal/proxy"
-	pb "github.com/yourusername/order-service/proto"
+	"github.com/hsibAD/api-gateway/internal/proxy"
+	pb "github.com/hsibAD/order-service/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type OrderHandler struct {
-	orderService *proxy.OrderServiceClient
+	orderClient *proxy.OrderServiceClient
 }
 
-func NewOrderHandler(orderService *proxy.OrderServiceClient) *OrderHandler {
+func NewOrderHandler(orderClient *proxy.OrderServiceClient) *OrderHandler {
 	return &OrderHandler{
-		orderService: orderService,
+		orderClient: orderClient,
 	}
 }
 
@@ -41,7 +41,7 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 		DeliveryTime:     timestamppb.New(timestamppb.Now().AsTime()),
 	}
 
-	order, err := h.orderService.CreateOrder(c.Request.Context(), req)
+	order, err := h.orderClient.CreateOrder(c.Request.Context(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -56,7 +56,7 @@ func (h *OrderHandler) GetOrder(c *gin.Context) {
 		OrderId: orderID,
 	}
 
-	order, err := h.orderService.GetOrder(c.Request.Context(), req)
+	order, err := h.orderClient.GetOrder(c.Request.Context(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -81,7 +81,7 @@ func (h *OrderHandler) UpdateOrderStatus(c *gin.Context) {
 		Status:  pb.OrderStatus(pb.OrderStatus_value[request.Status]),
 	}
 
-	order, err := h.orderService.UpdateOrderStatus(c.Request.Context(), req)
+	order, err := h.orderClient.UpdateOrderStatus(c.Request.Context(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -100,7 +100,7 @@ func (h *OrderHandler) AddDeliveryAddress(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	address.UserId = userID.(string)
 
-	result, err := h.orderService.AddDeliveryAddress(c.Request.Context(), &address)
+	result, err := h.orderClient.AddDeliveryAddress(c.Request.Context(), &address)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -120,7 +120,7 @@ func (h *OrderHandler) ListDeliveryAddresses(c *gin.Context) {
 		Limit:  int32(limit),
 	}
 
-	result, err := h.orderService.ListDeliveryAddresses(c.Request.Context(), req)
+	result, err := h.orderClient.ListDeliveryAddresses(c.Request.Context(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -135,7 +135,7 @@ func (h *OrderHandler) GetAvailableDeliverySlots(c *gin.Context) {
 		Date: timestamppb.Now(),
 	}
 
-	result, err := h.orderService.GetAvailableDeliverySlots(c.Request.Context(), req)
+	result, err := h.orderClient.GetAvailableDeliverySlots(c.Request.Context(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
